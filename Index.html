@@ -868,12 +868,160 @@
   .product-visual:hover .product-frame {
     transform: translate(-6px, -6px);
   }
+
+  /* HAMBURGER */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    z-index: 200;
+  }
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--white);
+    transition: transform 0.3s, opacity 0.3s, width 0.3s;
+    transform-origin: center;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; width: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* MOBILE MENU OVERLAY */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 150;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .mobile-menu.open { opacity: 1; }
+  .mobile-menu a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 4px;
+    color: var(--white);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--red); }
+  .mobile-menu .mobile-cta {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 16px 48px;
+    margin-top: 8px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  /* ===================== MEDIA QUERIES ===================== */
+  @media (max-width: 768px) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+
+    /* NAV */
+    nav { padding: 16px 20px; }
+    .nav-links, .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    .mobile-menu { display: flex; }
+
+    /* HERO */
+    .hero { height: 100svh; align-items: flex-end; }
+    .hero-content { padding: 0 20px 70px; max-width: 100%; }
+    .hero-title { font-size: clamp(60px, 16vw, 90px); }
+    .hero-sub { font-size: 14px; max-width: 100%; }
+    .hero-actions { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .btn-primary { width: 100%; text-align: center; padding: 16px 24px; }
+
+    .slide-figure { width: 220px; right: 0; opacity: 0.4; }
+    .slide-tag { font-size: 60px; right: 2%; }
+
+    .slide-prev { left: 12px; width: 40px; height: 40px; }
+    .slide-next { right: 56px; width: 40px; height: 40px; }
+    .slider-controls { right: 14px; }
+    .slide-counter { right: 20px; bottom: 20px; }
+
+    /* PRODUCT SECTION */
+    .product-section {
+      grid-template-columns: 1fr;
+      gap: 40px;
+      padding: 60px 20px 80px;
+    }
+    .product-visual { max-width: 340px; margin: 0 auto; width: 100%; }
+    .product-bg { display: none; }
+    .product-badge { display: none; }
+
+    .product-name { font-size: clamp(44px, 12vw, 64px); }
+    .product-name-sub { font-size: clamp(22px, 6vw, 32px); }
+    .product-desc { font-size: 14px; }
+
+    .size-selector { flex-wrap: wrap; gap: 8px; }
+    .size-btn { width: 42px; height: 42px; font-size: 12px; }
+
+    .product-actions { flex-direction: row; }
+    .btn-buy { padding: 16px 24px; font-size: 12px; }
+
+    /* MANIFESTO */
+    .manifesto { padding: 70px 20px; }
+    .manifesto-quote { font-size: clamp(28px, 7vw, 48px); }
+
+    /* PROOF */
+    .proof {
+      grid-template-columns: 1fr;
+      gap: 1px;
+      max-width: 100%;
+      padding: 0 20px;
+    }
+    .proof-item { padding: 28px 20px; }
+    .proof-number { font-size: 44px; }
+
+    /* FOOTER */
+    footer {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 36px 20px;
+      gap: 24px;
+    }
+    .footer-links { flex-wrap: wrap; gap: 16px 24px; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title { font-size: clamp(52px, 18vw, 80px); }
+    .slide-next { right: 52px; }
+    .proof { padding: 0; }
+  }
 </style>
 </head>
 <body>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" onclick="closeMobileMenu()">Shop</a>
+  <a href="#" onclick="closeMobileMenu()">Lookbook</a>
+  <a href="#" onclick="closeMobileMenu()">About</a>
+  <a href="#" onclick="closeMobileMenu()">Contact</a>
+  <a href="#product" class="mobile-cta" onclick="closeMobileMenu()">Shop Now</a>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -885,6 +1033,9 @@
     <li><a href="#">Contact</a></li>
   </ul>
   <button class="nav-cta">Shop Now</button>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -1062,42 +1213,61 @@
 </footer>
 
 <script>
-  // CUSTOM CURSOR
-  const cursor = document.getElementById('cursor');
-  const cursorRing = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx + 'px';
-    cursor.style.top = my + 'px';
-  });
-
-  function animateRing() {
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    cursorRing.style.left = rx + 'px';
-    cursorRing.style.top = ry + 'px';
-    requestAnimationFrame(animateRing);
+  // MOBILE MENU
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const ham = document.getElementById('hamburger');
+    const isOpen = menu.classList.contains('open');
+    if (isOpen) {
+      menu.classList.remove('open');
+      ham.classList.remove('open');
+      setTimeout(() => { menu.style.display = 'none'; }, 300);
+    } else {
+      menu.style.display = 'flex';
+      requestAnimationFrame(() => menu.classList.add('open'));
+      ham.classList.add('open');
+    }
   }
-  animateRing();
+  function closeMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const ham = document.getElementById('hamburger');
+    menu.classList.remove('open');
+    ham.classList.remove('open');
+    setTimeout(() => { menu.style.display = 'none'; }, 300);
+  }
 
-  document.querySelectorAll('button, a, .dot, .swatch, .size-btn').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.width = '20px';
-      cursor.style.height = '20px';
-      cursorRing.style.width = '52px';
-      cursorRing.style.height = '52px';
-      cursorRing.style.borderColor = 'rgba(209,0,0,0.8)';
+  // CUSTOM CURSOR (desktop only)
+  const isTouchDevice = window.matchMedia('(hover: none)').matches;
+  if (!isTouchDevice) {
+    const cursor = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
     });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.width = '12px';
-      cursor.style.height = '12px';
-      cursorRing.style.width = '36px';
-      cursorRing.style.height = '36px';
-      cursorRing.style.borderColor = 'rgba(209,0,0,0.5)';
+    function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      cursorRing.style.left = rx + 'px';
+      cursorRing.style.top = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    document.querySelectorAll('button, a, .dot, .swatch, .size-btn').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '20px'; cursor.style.height = '20px';
+        cursorRing.style.width = '52px'; cursorRing.style.height = '52px';
+        cursorRing.style.borderColor = 'rgba(209,0,0,0.8)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '12px'; cursor.style.height = '12px';
+        cursorRing.style.width = '36px'; cursorRing.style.height = '36px';
+        cursorRing.style.borderColor = 'rgba(209,0,0,0.5)';
+      });
     });
-  });
+  }
 
   // SLIDER
   const slides = document.querySelectorAll('.slide');
@@ -1140,6 +1310,19 @@
   });
 
   startAutoplay();
+
+  // TOUCH SWIPE for slider
+  let touchStartX = 0;
+  const heroEl = document.querySelector('.hero');
+  heroEl.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  heroEl.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      clearInterval(autoplay);
+      goTo(diff > 0 ? current + 1 : current - 1);
+      startAutoplay();
+    }
+  }, { passive: true });
 
   // PRODUCT COLOR SWITCHER
   function changeColor(color, el) {
