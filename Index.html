@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLVCK RIOT — Wear The Rage</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #D10000;
+    --red-bright: #FF1A1A;
+    --black: #0A0A0A;
+    --white: #F5F5F5;
+    --gray: #1A1A1A;
+    --mid: #2a2a2a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--red);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(209,0,0,0.5);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.25s, height 0.25s, opacity 0.2s;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--white);
+    text-decoration: none;
+    position: relative;
+  }
+  .logo span { color: var(--red); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--red); }
+
+  .nav-cta {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 10px 24px;
+    cursor: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--red-bright); transform: scale(1.04); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .slides-container {
+    position: absolute;
+    inset: 0;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1), transform 1s cubic-bezier(0.4,0,0.2,1);
+    transform: scale(1.04);
+    background-size: cover;
+    background-position: center;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .slide::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(10,10,10,0.85) 30%, rgba(10,10,10,0.2) 100%),
+                linear-gradient(to top, rgba(10,10,10,0.8) 20%, transparent 60%);
+  }
+
+  /* Placeholder slide backgrounds using CSS patterns */
+  .slide-1 {
+    background-color: #1a0a0a;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(209,0,0,0.04) 0, rgba(209,0,0,0.04) 1px, transparent 0, transparent 50%);
+    background-size: 20px 20px;
+  }
+  .slide-2 {
+    background-color: #0d0d0d;
+    background-image: radial-gradient(circle at 70% 40%, rgba(209,0,0,0.15) 0%, transparent 60%);
+  }
+  .slide-3 {
+    background-color: #111;
+    background-image: linear-gradient(135deg, rgba(209,0,0,0.08) 0%, transparent 50%);
+  }
+
+  /* Big model silhouettes using CSS shapes */
+  .slide-figure {
+    position: absolute;
+    right: 15%;
+    bottom: 0;
+    width: 380px;
+    height: 85%;
+    z-index: 1;
+  }
+
+  .slide-1 .slide-figure {
+    background: linear-gradient(160deg, #2a2a2a 0%, #111 60%, #1a0a0a 100%);
+    clip-path: polygon(30% 0%, 70% 0%, 90% 10%, 95% 40%, 85% 70%, 80% 100%, 20% 100%, 15% 70%, 5% 40%, 10% 10%);
+  }
+  .slide-2 .slide-figure {
+    background: linear-gradient(160deg, #333 0%, #1a1a1a 50%, #0d0d0d 100%);
+    clip-path: polygon(25% 0%, 75% 0%, 92% 15%, 88% 50%, 78% 80%, 75% 100%, 25% 100%, 22% 80%, 12% 50%, 8% 15%);
+  }
+  .slide-3 .slide-figure {
+    background: linear-gradient(160deg, #2d1010 0%, #1a0808 50%, #0d0d0d 100%);
+    clip-path: polygon(20% 0%, 80% 0%, 95% 20%, 90% 55%, 82% 85%, 78% 100%, 22% 100%, 18% 85%, 10% 55%, 5% 20%);
+  }
+
+  /* Diagonal red accent on figures */
+  .slide-figure::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 60%, rgba(209,0,0,0.3) 100%);
+    clip-path: inherit;
+  }
+
+  /* SLIDE IMAGE LABELS */
+  .slide-tag {
+    position: absolute;
+    top: 30%;
+    right: 8%;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 120px;
+    color: rgba(209,0,0,0.06);
+    letter-spacing: -4px;
+    z-index: 0;
+    user-select: none;
+    line-height: 1;
+    transform: rotate(-90deg) translateX(-40%);
+    transform-origin: right center;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    padding: 0 48px 80px;
+    max-width: 620px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.7s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 9vw, 130px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.8s 0.5s forwards;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--red);
+    display: block;
+  }
+
+  .hero-sub {
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: rgba(245,245,245,0.65);
+    margin-bottom: 36px;
+    max-width: 400px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s 0.7s forwards;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s 0.9s forwards;
+  }
+
+  .btn-primary {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 16px 40px;
+    cursor: none;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--red-bright);
+    transform: translateX(-101%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-ghost {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(245,245,245,0.7);
+    background: none;
+    border: none;
+    cursor: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+    text-decoration: none;
+  }
+  .btn-ghost .arrow {
+    width: 32px;
+    height: 1px;
+    background: currentColor;
+    position: relative;
+    transition: width 0.3s;
+  }
+  .btn-ghost .arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -3px;
+    width: 6px; height: 6px;
+    border-right: 1px solid;
+    border-top: 1px solid;
+    transform: rotate(45deg);
+  }
+  .btn-ghost:hover { color: var(--white); }
+  .btn-ghost:hover .arrow { width: 48px; }
+
+  /* SLIDER CONTROLS */
+  .slider-controls {
+    position: absolute;
+    right: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    background: rgba(245,245,245,0.3);
+    border-radius: 50%;
+    cursor: none;
+    transition: background 0.3s, transform 0.3s, height 0.3s, border-radius 0.3s;
+    border: none;
+    padding: 0;
+  }
+  .dot.active {
+    background: var(--red);
+    height: 28px;
+    border-radius: 3px;
+  }
+
+  .slide-counter {
+    position: absolute;
+    bottom: 80px;
+    right: 48px;
+    z-index: 20;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: rgba(245,245,245,0.4);
+  }
+  .slide-counter strong { color: var(--red); font-size: 22px; }
+
+  /* SLIDE ARROWS */
+  .slide-prev, .slide-next {
+    position: absolute;
+    top: 50%;
+    z-index: 20;
+    background: rgba(209,0,0,0.15);
+    border: 1px solid rgba(209,0,0,0.3);
+    color: var(--white);
+    width: 48px; height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+    transition: background 0.2s, transform 0.2s;
+    transform: translateY(-50%);
+  }
+  .slide-prev { left: 48px; }
+  .slide-next { right: 100px; }
+  .slide-prev:hover, .slide-next:hover { background: var(--red); transform: translateY(-50%) scale(1.1); }
+  .slide-prev svg, .slide-next svg { width: 18px; height: 18px; }
+
+  /* TICKER */
+  .ticker {
+    background: var(--red);
+    overflow: hidden;
+    padding: 10px 0;
+    position: relative;
+  }
+  .ticker-track {
+    display: flex;
+    gap: 0;
+    animation: ticker 18s linear infinite;
+    width: max-content;
+  }
+  .ticker-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 4px;
+    white-space: nowrap;
+    padding: 0 40px;
+    color: var(--white);
+  }
+  .ticker-item::after {
+    content: '✦';
+    margin-left: 40px;
+    opacity: 0.5;
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* PRODUCT SECTION */
+  .product-section {
+    padding: 120px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .product-visual {
+    position: relative;
+    aspect-ratio: 3/4;
+  }
+
+  .product-bg {
+    position: absolute;
+    inset: -20px -20px 20px 20px;
+    background: var(--gray);
+    z-index: 0;
+  }
+
+  .product-frame {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background: var(--mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Clothing product mockup */
+  .product-mockup {
+    width: 65%;
+    height: 75%;
+    position: relative;
+  }
+
+  .shirt-shape {
+    width: 100%;
+    height: 100%;
+    background: var(--black);
+    clip-path: polygon(20% 0%, 80% 0%, 100% 15%, 85% 20%, 85% 100%, 15% 100%, 15% 20%, 0% 15%);
+    position: relative;
+    border: 1px solid rgba(209,0,0,0.2);
+  }
+
+  .shirt-logo {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--red);
+    letter-spacing: 4px;
+    text-align: center;
+    line-height: 1;
+    width: 100%;
+    padding: 0 30px;
+  }
+  .shirt-logo small {
+    display: block;
+    font-size: 8px;
+    letter-spacing: 8px;
+    color: rgba(245,245,245,0.4);
+    margin-top: 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+  }
+
+  .product-accent-line {
+    position: absolute;
+    bottom: -20px;
+    left: -20px;
+    width: 60px;
+    height: 4px;
+    background: var(--red);
+  }
+
+  .product-badge {
+    position: absolute;
+    top: 24px;
+    left: -24px;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    padding: 8px 20px;
+    z-index: 10;
+    transform: rotate(-90deg) translateX(-50%);
+    transform-origin: left center;
+    white-space: nowrap;
+  }
+
+  /* Color swatches */
+  .color-swatches {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+  .swatch {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: none;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .swatch:hover, .swatch.active { border-color: var(--white); transform: scale(1.2); }
+  .swatch-black { background: #0a0a0a; }
+  .swatch-red { background: var(--red); }
+  .swatch-white { background: #f0f0f0; }
+
+  /* Product info */
+  .product-info {}
+
+  .product-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+  }
+
+  .product-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 5vw, 80px);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .product-name-sub {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 3vw, 44px);
+    color: rgba(245,245,245,0.25);
+    letter-spacing: 4px;
+    margin-bottom: 32px;
+  }
+
+  .product-desc {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: rgba(245,245,245,0.6);
+    margin-bottom: 36px;
+    max-width: 420px;
+  }
+
+  .product-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(245,245,245,0.7);
+  }
+  .feature-dot {
+    width: 6px; height: 6px;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+
+  .product-pricing {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+
+  .price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: var(--white);
+    letter-spacing: 2px;
+  }
+
+  .price-note {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(245,245,245,0.35);
+  }
+
+  .size-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .size-btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    width: 44px; height: 44px;
+    border: 1px solid rgba(245,245,245,0.2);
+    background: none;
+    color: rgba(245,245,245,0.5);
+    cursor: none;
+    transition: all 0.2s;
+  }
+  .size-btn:hover { border-color: var(--red); color: var(--white); }
+  .size-btn.active { border-color: var(--red); background: var(--red); color: var(--white); }
+
+  .product-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .btn-buy {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 18px 48px;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+    flex: 1;
+  }
+  .btn-buy::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--red-bright), var(--red));
+    transform: translateX(-101%);
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  .btn-buy:hover::before { transform: translateX(0); }
+  .btn-buy:hover { transform: translateY(-2px); }
+  .btn-buy span { position: relative; z-index: 1; }
+
+  .btn-wishlist {
+    width: 56px; height: 56px;
+    border: 1px solid rgba(245,245,245,0.2);
+    background: none;
+    color: rgba(245,245,245,0.5);
+    cursor: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .btn-wishlist:hover { border-color: var(--red); color: var(--red); }
+  .btn-wishlist svg { width: 20px; height: 20px; }
+
+  /* MANIFESTO SECTION */
+  .manifesto {
+    padding: 100px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--gray);
+  }
+
+  .manifesto::before {
+    content: 'BLVCK RIOT';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 15vw, 220px);
+    color: rgba(255,255,255,0.03);
+    white-space: nowrap;
+    letter-spacing: 10px;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .manifesto-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 24px;
+    opacity: 0;
+    transition: all 0.8s;
+  }
+  .manifesto-eyebrow.visible { opacity: 1; }
+
+  .manifesto-quote {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 68px);
+    line-height: 1.05;
+    max-width: 800px;
+    margin: 0 auto 32px;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.9s 0.2s;
+  }
+  .manifesto-quote.visible { opacity: 1; transform: translateY(0); }
+
+  .manifesto-line {
+    width: 60px;
+    height: 2px;
+    background: var(--red);
+    margin: 0 auto;
+    opacity: 0;
+    transition: all 0.6s 0.5s;
+    transform: scaleX(0);
+  }
+  .manifesto-line.visible { opacity: 1; transform: scaleX(1); }
+
+  /* SOCIAL PROOF */
+  .proof {
+    padding: 80px 48px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(245,245,245,0.06);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .proof-item {
+    padding: 40px;
+    text-align: center;
+    background: var(--black);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s;
+  }
+  .proof-item.visible { opacity: 1; transform: translateY(0); }
+  .proof-item:nth-child(2) { transition-delay: 0.15s; }
+  .proof-item:nth-child(3) { transition-delay: 0.3s; }
+
+  .proof-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .proof-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(245,245,245,0.4);
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid rgba(245,245,245,0.08);
+    padding: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 4px;
+  }
+  .footer-logo span { color: var(--red); }
+
+  .footer-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+  .footer-links a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(245,245,245,0.3);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--red); }
+
+  .footer-copy {
+    font-size: 12px;
+    color: rgba(245,245,245,0.2);
+    letter-spacing: 1px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s, transform 0.8s;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RED LINE DIVIDER */
+  .red-line {
+    height: 1px;
+    background: linear-gradient(to right, var(--red), transparent);
+  }
+
+  /* HOVER LIFT for product section */
+  .product-frame {
+    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .product-visual:hover .product-frame {
+    transform: translate(-6px, -6px);
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">BLVCK<span>.</span>RIOT</a>
+  <ul class="nav-links">
+    <li><a href="#">Shop</a></li>
+    <li><a href="#">Lookbook</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <button class="nav-cta">Shop Now</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="slides-container">
+    <div class="slide slide-1 active">
+      <div class="slide-figure"></div>
+      <div class="slide-tag">RAGE</div>
+    </div>
+    <div class="slide slide-2">
+      <div class="slide-figure"></div>
+      <div class="slide-tag">BOLD</div>
+    </div>
+    <div class="slide slide-3">
+      <div class="slide-figure"></div>
+      <div class="slide-tag">RIOT</div>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">New Drop — SS 2025</p>
+    <h1 class="hero-title">
+      Wear The<br>
+      <em>Rage.</em>
+    </h1>
+    <p class="hero-sub">Clothing built for those who refuse to blend in. Uncompromising. Unfiltered. Unbreakable.</p>
+    <div class="hero-actions">
+      <a href="#product" class="btn-primary"><span>Shop The Drop</span></a>
+      <a href="#" class="btn-ghost"><span class="arrow"></span> View Lookbook</a>
+    </div>
+  </div>
+
+  <div class="slider-controls">
+    <button class="dot active" data-slide="0"></button>
+    <button class="dot" data-slide="1"></button>
+    <button class="dot" data-slide="2"></button>
+  </div>
+
+  <div class="slide-counter"><strong id="current-slide">01</strong> / 03</div>
+
+  <button class="slide-prev" id="prevBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </button>
+  <button class="slide-next" id="nextBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  </button>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker">
+    <span class="ticker-item">FREE SHIPPING ON ALL ORDERS</span>
+    <span class="ticker-item">LIMITED EDITION DROP</span>
+    <span class="ticker-item">NEW SEASON SS25</span>
+    <span class="ticker-item">WEAR THE RAGE</span>
+    <span class="ticker-item">FREE SHIPPING ON ALL ORDERS</span>
+    <span class="ticker-item">LIMITED EDITION DROP</span>
+    <span class="ticker-item">NEW SEASON SS25</span>
+    <span class="ticker-item">WEAR THE RAGE</span>
+    <span class="ticker-item">FREE SHIPPING ON ALL ORDERS</span>
+    <span class="ticker-item">LIMITED EDITION DROP</span>
+    <span class="ticker-item">NEW SEASON SS25</span>
+    <span class="ticker-item">WEAR THE RAGE</span>
+  </div>
+</div>
+
+<!-- PRODUCT -->
+<section id="product">
+  <div class="product-section">
+
+    <div class="product-visual reveal">
+      <div class="product-bg"></div>
+      <div class="product-frame">
+        <div class="product-mockup">
+          <div class="shirt-shape" id="productShirt">
+            <div class="shirt-logo">
+              BLVCK RIOT
+              <small>WEAR THE RAGE</small>
+            </div>
+          </div>
+        </div>
+        <div class="color-swatches">
+          <div class="swatch swatch-black active" onclick="changeColor('black', this)"></div>
+          <div class="swatch swatch-red" onclick="changeColor('red', this)"></div>
+          <div class="swatch swatch-white" onclick="changeColor('white', this)"></div>
+        </div>
+      </div>
+      <div class="product-badge">Limited Drop</div>
+      <div class="product-accent-line"></div>
+    </div>
+
+    <div class="product-info reveal" style="transition-delay: 0.2s;">
+      <p class="product-tag">Signature Collection</p>
+      <h2 class="product-name">RIOT TEE</h2>
+      <p class="product-name-sub">Vol. 01</p>
+      <p class="product-desc">
+        Heavyweight 320gsm cotton. Oversized silhouette. A statement piece that doesn't ask for permission. Made for those who move with intention and dress with conviction.
+      </p>
+
+      <div class="product-features">
+        <div class="feature"><span class="feature-dot"></span> 320gsm Heavyweight Cotton</div>
+        <div class="feature"><span class="feature-dot"></span> Oversized Drop-Shoulder Fit</div>
+        <div class="feature"><span class="feature-dot"></span> Screen-Printed Graphic</div>
+        <div class="feature"><span class="feature-dot"></span> Garment-Washed Finish</div>
+      </div>
+
+      <div class="product-pricing">
+        <span class="price" id="price">£65</span>
+        <span class="price-note">Free shipping</span>
+      </div>
+
+      <div class="size-selector">
+        <button class="size-btn" onclick="selectSize(this)">XS</button>
+        <button class="size-btn active" onclick="selectSize(this)">S</button>
+        <button class="size-btn" onclick="selectSize(this)">M</button>
+        <button class="size-btn" onclick="selectSize(this)">L</button>
+        <button class="size-btn" onclick="selectSize(this)">XL</button>
+        <button class="size-btn" onclick="selectSize(this)">XXL</button>
+      </div>
+
+      <div class="product-actions">
+        <button class="btn-buy"><span>Add To Bag</span></button>
+        <button class="btn-wishlist">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="red-line"></div>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <p class="manifesto-eyebrow">Our Philosophy</p>
+  <h2 class="manifesto-quote">"This isn't clothing. This is armour for the ones who don't back down."</h2>
+  <div class="manifesto-line"></div>
+</section>
+
+<div class="red-line" style="background: linear-gradient(to left, var(--red), transparent);"></div>
+
+<!-- PROOF -->
+<div class="proof">
+  <div class="proof-item">
+    <div class="proof-number">12K+</div>
+    <div class="proof-label">Pieces Sold</div>
+  </div>
+  <div class="proof-item">
+    <div class="proof-number">98%</div>
+    <div class="proof-label">5-Star Reviews</div>
+  </div>
+  <div class="proof-item">
+    <div class="proof-number">48H</div>
+    <div class="proof-label">Fast Dispatch</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">BLVCK<span>.</span>RIOT</div>
+  <ul class="footer-links">
+    <li><a href="#">Instagram</a></li>
+    <li><a href="#">TikTok</a></li>
+    <li><a href="#">Returns</a></li>
+    <li><a href="#">Privacy</a></li>
+  </ul>
+  <span class="footer-copy">© 2025 Blvck Riot. All rights reserved.</span>
+</footer>
+
+<script>
+  // CUSTOM CURSOR
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    cursorRing.style.left = rx + 'px';
+    cursorRing.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('button, a, .dot, .swatch, .size-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      cursorRing.style.width = '52px';
+      cursorRing.style.height = '52px';
+      cursorRing.style.borderColor = 'rgba(209,0,0,0.8)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      cursorRing.style.width = '36px';
+      cursorRing.style.height = '36px';
+      cursorRing.style.borderColor = 'rgba(209,0,0,0.5)';
+    });
+  });
+
+  // SLIDER
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.dot');
+  const slideNumEl = document.getElementById('current-slide');
+  let current = 0;
+  let autoplay;
+
+  function goTo(idx) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (idx + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    slideNumEl.textContent = String(current + 1).padStart(2, '0');
+  }
+
+  function startAutoplay() {
+    autoplay = setInterval(() => goTo(current + 1), 4500);
+  }
+
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    clearInterval(autoplay);
+    goTo(current + 1);
+    startAutoplay();
+  });
+
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    clearInterval(autoplay);
+    goTo(current - 1);
+    startAutoplay();
+  });
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      clearInterval(autoplay);
+      goTo(parseInt(dot.dataset.slide));
+      startAutoplay();
+    });
+  });
+
+  startAutoplay();
+
+  // PRODUCT COLOR SWITCHER
+  function changeColor(color, el) {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    const shirt = document.getElementById('productShirt');
+    const logo = shirt.querySelector('.shirt-logo');
+    const sub = shirt.querySelector('small');
+    if (color === 'black') {
+      shirt.style.background = '#0a0a0a';
+      shirt.style.borderColor = 'rgba(209,0,0,0.2)';
+      logo.style.color = '#D10000';
+      sub.style.color = 'rgba(245,245,245,0.4)';
+    } else if (color === 'red') {
+      shirt.style.background = '#D10000';
+      shirt.style.borderColor = 'rgba(245,245,245,0.2)';
+      logo.style.color = '#0a0a0a';
+      sub.style.color = 'rgba(0,0,0,0.4)';
+    } else {
+      shirt.style.background = '#f0f0f0';
+      shirt.style.borderColor = 'rgba(0,0,0,0.1)';
+      logo.style.color = '#D10000';
+      sub.style.color = 'rgba(0,0,0,0.4)';
+    }
+  }
+
+  // SIZE SELECTOR
+  function selectSize(el) {
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // SCROLL REVEAL
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal, .manifesto-eyebrow, .manifesto-quote, .manifesto-line, .proof-item').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
